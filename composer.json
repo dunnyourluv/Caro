@@ -1,0 +1,15 @@
+{
+    "name": "corep/b13",
+    "autoload": {
+        "psr-4": {
+            "Caro\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "dunn",
+            "email": "corepper03@gmail.com"
+        }
+    ],
+    "require": {}
+}
