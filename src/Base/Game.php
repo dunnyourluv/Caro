@@ -17,11 +17,61 @@ class Game
     $this->playingPlayer = $pl1;
     $this->board = $board;
   }
+function checkWin(): bool
+{
+    $board = $this->board;
+    for ($i = 0; $i < 3; $i++) {
+        if ($this->checkLine([$board->getSquare(new Position($i, 0)),
+                              $board->getSquare(new Position($i, 1)),
+                              $board->getSquare(new Position($i, 2))])
+          || $this->checkLine([$board->getSquare(new Position(0, $i)),
+                              $board->getSquare(new Position(1, $i)),
+                              $board->getSquare(new Position(2, $i))]))
+        {
+            return true;
+        }
+    }
 
-  function checkWin(): bool
-  {
+    if ($this->checkLine([$board->getSquare(new Position(0, 0)),
+                          $board->getSquare(new Position(1, 1)),
+                          $board->getSquare(new Position(2, 2))])
+      || $this->checkLine([$board->getSquare(new Position(0, 2)),
+                          $board->getSquare(new Position(1, 1)),
+                          $board->getSquare(new Position(2, 0))])) 
+    {
+        return true;
+    }
+    return false;
+}
+private function checkLine(array $squares): bool
+{
+    $chessType = null;
+    foreach ($squares as $square) {
+        if (!$square->hasChess()) {
+            return false;
+        }
+        $chess = $square->getChess();
+        if ($chessType === null) {
+            $chessType = $chess->getType();
+        } else if ($chessType !== $chess->getType()) {
+            return false;
+        }
+    }
     return true;
-  }
+}
+private function checkDraw(): bool
+    {
+        $board = $this->board;
+        for ($i = 0; $i < 3; $i++) {
+            for ($j = 0; $j < 3; $j++) {
+                $square = $board->getSquare(new Position($i,$j));
+                if (!$square->hasChess()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
   function notify(string $message): void
   {
@@ -90,9 +140,21 @@ class Game
     }
 
     while (true) {
+      $this->board->show();
       $player = $this->playingPlayer;
       if ($player->play($this)) {
         $this->playingPlayer = $this->switchPlayer();
+      }
+      if ($this->checkWin()) 
+      {
+        $this->board->show();
+        $this->notify("Player ". $player->getName() ." wins!");
+        return;
+      }  
+      if ($this->checkDraw()) {
+        $this->board->show();
+        $this->notify("draw!");
+        return;
       }
     }
   }

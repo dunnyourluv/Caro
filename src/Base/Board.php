@@ -45,12 +45,18 @@ class Board
 
   function show()
   {
-    for($i = 0; $i < 3; $i++)
-    {
-      for($j = 0; $j < 3; $j++)
-      {
+    for ($i = 0; $i < 3; $i++) {
+      for ($j = 0; $j < 3; $j++) {
+          $square = $this->squares[$i][$j];
+          $chess = $square->getChess();
 
+          if ($chess !== null) {
+              echo $chess->getType() . ' ';
+          } else {
+              echo '_ ';
+          }
       }
-    }
+      echo "\n";
+  }
   }
 }
